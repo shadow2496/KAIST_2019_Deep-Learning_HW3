@@ -27,15 +27,15 @@ def train(models, writer, device):
             data = data.to(device)
 
             x = data
-            for k in range(i - 1):
+            for k in range(i):
                 x = models.layers[k].encoder(x)
             idx = list(range(x.size(1)))
             random.shuffle(idx)
             x_noise = x.clone()
             x_noise[:, idx[:int(x.size(1) * config.w_v)]] = 0
 
-            x_rec = models.layers[i](x_noise)
-            loss = models.bce_criterion(x_rec, x)
+            x_rec = models.layers[i](x_noise.detach())
+            loss = models.bce_criterion(x_rec, x.detach())
 
             models.da_optimizers[i].zero_grad()
             loss.backward()
@@ -75,7 +75,7 @@ def train(models, writer, device):
                 loss = models.ce_criterion(logits, labels)
                 writer.add_scalar('Loss/val', loss.item(), step + 1)
 
-    checkpoint_path = os.path.join(config.checkpoint_dir, config.name, '{}.ckpt'.format(config.train_iters))
+    checkpoint_path = os.path.join(config.checkpoint_dir, config.name, '{:05d}.ckpt'.format(config.train_iters))
     torch.save(models.layers.state_dict(), checkpoint_path)
 
 
@@ -91,8 +91,6 @@ def main():
 
     device = torch.device('cuda:0' if config.use_cuda else 'cpu')
     models = SdA(config).to(device)
-    for layer in models.layers:
-        layer.to(device)
     if config.load_iter != 0:
         pass
 

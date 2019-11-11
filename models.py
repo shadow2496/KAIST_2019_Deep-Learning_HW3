@@ -25,13 +25,14 @@ class SdA(nn.Module):
     def __init__(self, config):
         super(SdA, self).__init__()
 
-        self.layers = []
+        layers = []
         in_features = config.input_features
         for out_features in config.hidden_features:
             layer = dA(in_features, out_features)
             in_features = out_features
-            self.layers.append(layer)
-        self.layers.append(nn.Linear(in_features, config.classes))
+            layers.append(layer)
+        layers.append(nn.Linear(in_features, config.classes))
+        self.layers = nn.Sequential(*layers)
 
         if config.is_train:
             self.bce_criterion = nn.BCELoss()
