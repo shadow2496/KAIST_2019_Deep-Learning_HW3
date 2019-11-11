@@ -13,7 +13,7 @@ class MNIST(data.Dataset):
         self.dataset_dir = dataset_dir
         self.preprocess()
 
-        self.data, self.labels = torch.load(os.path.join(self.dataset_dir, '.pt'.format(split)))
+        self.data, self.labels = torch.load(os.path.join(self.dataset_dir, '{}.pt'.format(split)))
 
     def __getitem__(self, index):
         return self.data[index], self.labels[index]
@@ -23,7 +23,7 @@ class MNIST(data.Dataset):
 
     def _check_exists(self):
         return (os.path.exists(os.path.join(self.dataset_dir, 'train.pt'))
-                and os.path.exists(os.path.join(self.dataset_dir, 'valid.pt'))
+                and os.path.exists(os.path.join(self.dataset_dir, 'val.pt'))
                 and os.path.exists(os.path.join(self.dataset_dir, 'test.pt')))
 
     def preprocess(self):
@@ -36,18 +36,19 @@ class MNIST(data.Dataset):
         raw_test_data = np.loadtxt(raw_test_path, dtype=np.float32)
 
         train_set = (
-            torch.as_tensor(raw_train_data[:10000, :-1]).view(-1, 28, 28),
-            torch.as_tensor(raw_train_data[:10000, -1])
+            torch.as_tensor(raw_train_data[:10000, :-1]),
+            torch.as_tensor(raw_train_data[:10000, -1], dtype=torch.long)
         )
         valid_set = (
-            torch.as_tensor(raw_train_data[10000:, :-1]).view(-1, 28, 28),
-            torch.as_tensor(raw_train_data[10000:, -1])
+            torch.as_tensor(raw_train_data[10000:, :-1]),
+            torch.as_tensor(raw_train_data[10000:, -1], dtype=torch.long)
         )
         test_set = (
-            torch.as_tensor(raw_test_data[:, :-1]).view(-1, 28, 28),
-            torch.as_tensor(raw_test_data[:, -1])
+            torch.as_tensor(raw_test_data[:, :-1]),
+            torch.as_tensor(raw_test_data[:, -1], dtype=torch.long)
         )
 
         torch.save(train_set, os.path.join(self.dataset_dir, 'train.pt'))
-        torch.save(valid_set, os.path.join(self.dataset_dir, 'valid.pt'))
+        torch.save(valid_set, os.path.join(self.dataset_dir, 'val.pt'))
         torch.save(test_set, os.path.join(self.dataset_dir, 'test.pt'))
+        print("MNIST dataset is preprocessed.")
