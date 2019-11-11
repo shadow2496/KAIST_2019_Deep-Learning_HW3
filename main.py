@@ -86,8 +86,8 @@ def test(models, device):
 def main():
     if not os.path.exists(os.path.join(config.tensorboard_dir, config.name)):
         os.makedirs(os.path.join(config.tensorboard_dir, config.name))
-    if not os.path.exists(os.path.join(config.tensorboard_dir, config.name)):
-        os.makedirs(os.path.join(config.tensorboard_dir, config.name))
+    if not os.path.exists(os.path.join(config.checkpoint_dir, config.name)):
+        os.makedirs(os.path.join(config.checkpoint_dir, config.name))
 
     device = torch.device('cuda:0' if config.use_cuda else 'cpu')
     models = SdA(config).to(device)
