@@ -8,6 +8,7 @@ from torch.utils.tensorboard import SummaryWriter
 from config import config
 from datasets import MNIST
 from models import SdA
+from utils import load_checkpoints
 
 
 def train(models, writer, device):
@@ -92,7 +93,7 @@ def main():
     device = torch.device('cuda:0' if config.use_cuda else 'cpu')
     models = SdA(config).to(device)
     if config.load_iter != 0:
-        pass
+        load_checkpoints(models.layers, config.checkpoint_dir, config.name, config.load_iter)
 
     if config.is_train:
         models.train()
