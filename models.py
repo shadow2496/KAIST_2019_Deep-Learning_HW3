@@ -14,7 +14,7 @@ class dA(nn.Module):
             nn.Sigmoid()
         )
 
-        self.decoder[0].weight.data.copy_(self.encoder[0].weight.data.transpose(0, 1))
+        self.decoder[0].weight.data = self.encoder[0].weight.data.transpose(0, 1)
 
     def forward(self, x):
         h = self.encoder(x)
