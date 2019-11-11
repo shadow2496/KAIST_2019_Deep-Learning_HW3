@@ -7,11 +7,11 @@ class dA(nn.Module):
 
         self.encoder = nn.Sequential(
             nn.Linear(in_features, out_features),
-            nn.Sigmoid()
+            nn.ReLU()
         )
         self.decoder = nn.Sequential(
             nn.Linear(out_features, in_features),
-            nn.Sigmoid()
+            nn.ReLU()
         )
 
         self.decoder[0].weight.data = self.encoder[0].weight.data.transpose(0, 1)
