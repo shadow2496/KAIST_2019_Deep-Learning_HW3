@@ -36,7 +36,7 @@ def train(models, writer, device):
             x_noise[:, idx[:int(x.size(1) * config.w_v)]] = 0
 
             x_rec = models.layers[i](x_noise.detach())
-            loss = models.bce_criterion(x_rec, x.detach())
+            loss = models.mse_criterion(x_rec, x.detach())
 
             models.da_optimizers[i].zero_grad()
             loss.backward()
@@ -81,7 +81,22 @@ def train(models, writer, device):
 
 
 def test(models, device):
-    pass
+    test_dataset = MNIST(config.dataset_dir, split='test')
+    test_loader = DataLoader(test_dataset, batch_size=config.batch_size, num_workers=config.num_workers)
+
+    correct = 0
+    total = 0
+    with torch.no_grad():
+        for data, labels in test_loader:
+            data = data.to(device)
+            labels = labels.to(device)
+
+            logits = models(data)
+            preds = logits.argmax(dim=1)
+            total += labels.size(0)
+            correct += torch.sum(preds == labels).item()
+
+    print("Accuracy: {}%".format(correct / total * 100))
 
 
 def main():

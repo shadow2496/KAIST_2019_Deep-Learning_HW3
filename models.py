@@ -35,7 +35,7 @@ class SdA(nn.Module):
         self.layers = nn.Sequential(*layers)
 
         if config.is_train:
-            self.bce_criterion = nn.BCELoss()
+            self.mse_criterion = nn.MSELoss()
             self.ce_criterion = nn.CrossEntropyLoss()
 
             self.da_optimizers = []
