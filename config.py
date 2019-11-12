@@ -12,7 +12,7 @@ config.batch_size = 64
 config.num_workers = 4
 
 config.input_features = 784
-config.hidden_features = [2000, 1000, 500]
+config.hidden_features = [2000, 320, 50]
 config.classes = 10
 
 config.lr = 1e-3
@@ -23,6 +23,6 @@ config.w_v = 0
 config.print_step = 10
 config.tensorboard_step = 100
 config.load_iter = 0
-config.train_iters = 10000
+config.train_iters = 5000
 config.is_train = True
 config.use_cuda = True
